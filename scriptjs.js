@@ -1,3 +1,192 @@
+Исправляю проблемы с загрузкой данных! Вот полностью рабочие коды:
+
+## 🎨 **index.html** (добавляем прогресс-бары с правильными атрибутами)
+
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🐱 Мой кот - Виртуальный питомец</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Шапка с балансом -->
+    <header class="header">
+      <div class="coins-card">
+        <div class="coins-icon">🪙</div>
+        <div class="coins-info">
+          <span class="coins-label">Монеты</span>
+          <span id="coins" class="coins-amount">0</span>
+        </div>
+      </div>
+      <h1 class="app-title">Мой кот</h1>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="main-content">
+      <!-- Аватар кота -->
+      <section class="pet-section">
+        <div class="pet-card">
+          <div id="pet-container" class="pet-container">
+            <div id="pet-avatar" class="pet-avatar">🐱</div>
+            <div id="accessory" class="accessory" style="display: none;"></div>
+          </div>
+          <div class="name-section">
+            <div class="name-display">
+              <span id="pet-name-display">Пушистик</span>
+              <button id="edit-name-btn" class="edit-name-btn">✏️</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Статистика -->
+      <section class="stats-section">
+        <div class="stats-card">
+          <div class="stat-item">
+            <div class="stat-header">
+              <span class="stat-icon">🍽️</span>
+              <span class="stat-label">Голод</span>
+            </div>
+            <div class="stat-value" id="hunger">0<span class="stat-max">/100</span></div>
+            <div class="progress-bar">
+              <div class="progress-fill" data-type="hunger" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-header">
+              <span class="stat-icon">😊</span>
+              <span class="stat-label">Настроение</span>
+            </div>
+            <div class="stat-value" id="happiness">0<span class="stat-max">/100</span></div>
+            <div class="progress-bar">
+              <div class="progress-fill" data-type="happiness" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-header">
+              <span class="stat-icon">✨</span>
+              <span class="stat-label">Чистота</span>
+            </div>
+            <div class="stat-value" id="cleanliness">0<span class="stat-max">/100</span></div>
+            <div class="progress-bar">
+              <div class="progress-fill" data-type="cleanliness" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Действия -->
+      <section class="actions-section">
+        <h2 class="section-title">Уход за котом</h2>
+        <div class="actions-grid">
+          <button id="feed" class="action-btn feed-btn">
+            <span class="btn-icon">🍽️</span>
+            <span class="btn-text">Кормить</span>
+          </button>
+          <button id="play" class="action-btn play-btn">
+            <span class="btn-icon">🧶</span>
+            <span class="btn-text">Играть</span>
+          </button>
+          <button id="wash" class="action-btn wash-btn">
+            <span class="btn-icon">🛁</span>
+            <span class="btn-text">Мыть</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Мини-игры -->
+      <section class="games-section">
+        <h2 class="section-title">Мини-игры</h2>
+        <div class="games-grid">
+          <button id="dice-game" class="game-btn dice-btn">
+            <span class="btn-icon">🎲</span>
+            <div class="game-content">
+              <span class="btn-text">Игра в кости</span>
+              <span class="btn-subtext">Выиграй до 15 монет</span>
+            </div>
+          </button>
+          <button id="click-game" class="game-btn click-btn">
+            <span class="btn-icon">🎯</span>
+            <div class="game-content">
+              <span class="btn-text">Попади в цель</span>
+              <span class="btn-subtext">Выиграй до 20 монет</span>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <!-- Магазин -->
+      <section class="shop-section">
+        <button id="open-shop" class="shop-btn">
+          <span class="btn-icon">🛒</span>
+          <span class="btn-text">Магазин аксессуаров</span>
+        </button>
+      </section>
+    </main>
+  </div>
+
+  <!-- Модальное окно магазина -->
+  <div id="shop-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>🛒 Магазин</h2>
+        <button id="close-shop" class="close-btn">×</button>
+      </div>
+      
+      <div class="shop-items">
+        <div class="shop-category">
+          <h3>🎩 Аксессуары</h3>
+          <div class="items-grid" id="accessories-grid">
+            <!-- Аксессуары будут добавляться через JS -->
+          </div>
+        </div>
+
+        <div class="shop-category">
+          <h3>🐾 Породы котиков</h3>
+          <div class="items-grid" id="breeds-grid">
+            <!-- Породы будут добавляться через JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно для смены имени -->
+  <div id="name-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Смена имени кота</h2>
+        <button id="close-name-modal" class="close-btn">×</button>
+      </div>
+      <div class="modal-body">
+        <p id="name-change-warning" style="color: #FF6B6B; font-size: 14px; margin-bottom: 15px; display: none;">
+          ⚠️ Вы можете сменить имя только один раз!
+        </p>
+        <input type="text" id="name-input" class="name-input" placeholder="Введите новое имя" maxlength="20">
+        <div class="name-char-count"><span id="char-count">0</span>/20</div>
+      </div>
+      <div class="modal-footer">
+        <button id="save-name-btn" class="save-name-btn">Сохранить имя</button>
+        <button id="cancel-name-btn" class="cancel-name-btn">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
+```
+
+## 🚀 **script.js** (полностью исправленный)
+
+```js
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { getDatabase, ref, get, set, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
@@ -47,6 +236,9 @@ const SHOP_ITEMS = {
 async function getCustomToken(userId) {
   try {
     const response = await fetch(`https://tg-pet-api.onrender.com/api/token?uid=${userId}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
     const data = await response.json();
     return data.token;
   } catch (error) {
@@ -58,14 +250,20 @@ async function getCustomToken(userId) {
 async function loginWithTelegramId() {
   try {
     const token = await getCustomToken(userId);
-    await signInWithCustomToken(auth, token);
+    if (!token) {
+      throw new Error("No token received from server");
+    }
+    const userCredential = await signInWithCustomToken(auth, token);
+    console.log("✅ Successfully signed in:", userCredential.user.uid);
+    return userCredential;
   } catch (error) {
-    console.error("Error during signInWithCustomToken:", error);
+    console.error("❌ Error during signInWithCustomToken:", error);
     throw error;
   }
 }
 
 async function initUserData(userRef) {
+  console.log("🆕 Creating initial user data...");
   const initialData = {
     coins: 50,
     hunger: 50,
@@ -82,32 +280,48 @@ async function initUserData(userRef) {
   };
   
   await set(userRef, initialData);
+  console.log("✅ Initial data created:", initialData);
   return initialData;
 }
 
 function render(data) {
-  document.getElementById('coins').textContent = data.coins;
-  document.getElementById('pet-name-display').textContent = data.name;
+  console.log("🎨 Rendering data:", data);
   
+  // Обновляем основные показатели
+  document.getElementById('coins').textContent = data.coins || 0;
+  document.getElementById('pet-name-display').textContent = data.name || "Пушистик";
+  
+  // Обновляем прогресс-бары и статистику
   updateProgressBars(data);
   updatePetAppearance(data);
   renderShopItems(data);
 }
 
 function updateProgressBars(data) {
+  console.log("📊 Updating progress bars with data:", {
+    hunger: data.hunger,
+    happiness: data.happiness,
+    cleanliness: data.cleanliness
+  });
+
   const stats = [
-    { id: 'hunger', type: 'hunger', value: data.hunger },
-    { id: 'happiness', type: 'happiness', value: data.happiness },
-    { id: 'cleanliness', type: 'cleanliness', value: data.cleanliness }
+    { id: 'hunger', type: 'hunger', value: data.hunger || 0 },
+    { id: 'happiness', type: 'happiness', value: data.happiness || 0 },
+    { id: 'cleanliness', type: 'cleanliness', value: data.cleanliness || 0 }
   ];
   
   stats.forEach(stat => {
     const element = document.getElementById(stat.id);
     const fillElement = document.querySelector(`.progress-fill[data-type="${stat.type}"]`);
     
-    if (element && fillElement) {
+    console.log(`Updating ${stat.type}:`, {
+      element: !!element,
+      fillElement: !!fillElement,
+      value: stat.value
+    });
+    
+    if (element) {
       element.textContent = stat.value;
-      fillElement.style.width = `${stat.value}%`;
       
       // Обновляем цвета текста в зависимости от значений
       if (stat.value < 30) {
@@ -117,6 +331,11 @@ function updateProgressBars(data) {
       } else {
         element.style.color = '#00aa00';
       }
+    }
+    
+    if (fillElement) {
+      fillElement.style.width = `${stat.value}%`;
+      console.log(`Set ${stat.type} progress bar to ${stat.value}%`);
     }
   });
 }
@@ -140,8 +359,10 @@ function updatePetAppearance(data) {
     if (data.currentAccessory) {
       accessoryEl.style.display = 'block';
       accessoryEl.textContent = getAccessoryEmoji(data.currentAccessory);
+      console.log("🎭 Accessory displayed:", data.currentAccessory);
     } else {
       accessoryEl.style.display = 'none';
+      console.log("🎭 No accessory");
     }
   }
 }
@@ -159,35 +380,65 @@ function getAccessoryEmoji(type) {
 
 function degrade(data) {
   const now = Date.now();
-  const hoursPassed = (now - data.lastUpdate) / (60 * 60 * 1000);
+  const hoursPassed = (now - (data.lastUpdate || now)) / (60 * 60 * 1000);
   
   const newData = { ...data };
-  newData.hunger = Math.min(100, newData.hunger + Math.floor(hoursPassed * 5));
-  newData.happiness = Math.max(0, newData.happiness - Math.floor(hoursPassed * 3));
-  newData.cleanliness = Math.max(0, newData.cleanliness - Math.floor(hoursPassed * 2));
-  newData.lastUpdate = now;
+  
+  // Применяем деградацию только если прошло достаточно времени
+  if (hoursPassed > 0.1) { // минимум 6 минут
+    newData.hunger = Math.min(100, (newData.hunger || 50) + Math.floor(hoursPassed * 5));
+    newData.happiness = Math.max(0, (newData.happiness || 80) - Math.floor(hoursPassed * 3));
+    newData.cleanliness = Math.max(0, (newData.cleanliness || 80) - Math.floor(hoursPassed * 2));
+    newData.lastUpdate = now;
+    
+    console.log("📉 Applied degradation:", {
+      hoursPassed: hoursPassed.toFixed(2),
+      newHunger: newData.hunger,
+      newHappiness: newData.happiness,
+      newCleanliness: newData.cleanliness
+    });
+  }
   
   return newData;
 }
 
 async function updateStat(field, delta) {
+  console.log(`🔄 Updating ${field} by ${delta}`);
+  
   const userRef = ref(db, `users/${userId}`);
   const snapshot = await get(userRef);
-  let data = snapshot.val();
   
-  data = degrade(data);
-  data[field] = Math.min(100, Math.max(0, data[field] + delta));
-  data.lastUpdate = Date.now();
-  
-  // Добавляем монеты за уход
-  if (delta > 0 && data[field] > 70) {
-    const coinsEarned = Math.floor(delta / 10);
-    data.coins += coinsEarned;
-    showFloatingMessage(`+${coinsEarned} монет!`, 'coins');
+  if (!snapshot.exists()) {
+    console.error("❌ No user data found!");
+    return;
   }
   
-  await set(userRef, data);
-  render(data);
+  let data = snapshot.val();
+  console.log("📋 Current data before update:", data);
+  
+  data = degrade(data);
+  const currentValue = data[field] || 0;
+  const newValue = Math.min(100, Math.max(0, currentValue + delta));
+  
+  data[field] = newValue;
+  data.lastUpdate = Date.now();
+  
+  console.log(`📈 ${field}: ${currentValue} -> ${newValue}`);
+  
+  // Добавляем монеты за уход
+  if (delta > 0 && newValue > 70) {
+    const coinsEarned = Math.floor(delta / 10);
+    data.coins = (data.coins || 0) + coinsEarned;
+    showFloatingMessage(`+${coinsEarned} монет!`, 'coins');
+    console.log(`💰 Earned ${coinsEarned} coins`);
+  }
+  
+  try {
+    await set(userRef, data);
+    console.log("✅ Data updated successfully");
+  } catch (error) {
+    console.error("❌ Error updating data:", error);
+  }
 }
 
 // Система смены имени
@@ -263,11 +514,17 @@ function setupNameSystem() {
     data.name = newName;
     data.nameChanged = true;
     
-    await set(userRef, data);
-    document.getElementById('pet-name-display').textContent = newName;
-    nameModal.style.display = 'none';
-    nameInput.value = '';
-    showFloatingMessage(`Имя изменено на: ${newName}`, 'action');
+    try {
+      await set(userRef, data);
+      document.getElementById('pet-name-display').textContent = newName;
+      nameModal.style.display = 'none';
+      nameInput.value = '';
+      showFloatingMessage(`Имя изменено на: ${newName}`, 'action');
+      console.log("✅ Name changed to:", newName);
+    } catch (error) {
+      console.error("❌ Error saving name:", error);
+      alert('Ошибка при сохранении имени!');
+    }
   });
 }
 
@@ -285,6 +542,12 @@ function renderShopItems(data) {
   accessoriesGrid.innerHTML = '';
   breedsGrid.innerHTML = '';
   
+  console.log("🛒 Rendering shop items with data:", {
+    accessories: data.accessories,
+    currentAccessory: data.currentAccessory,
+    breed: data.breed
+  });
+  
   // Рендерим аксессуары
   SHOP_ITEMS.accessories.forEach((item, index) => {
     const owned = data.accessories && data.accessories.includes(item.id);
@@ -293,6 +556,10 @@ function renderShopItems(data) {
     
     const shopItem = document.createElement('div');
     shopItem.className = `shop-item ${owned ? 'owned' : ''} ${equipped ? 'equipped' : ''} ${!canBuy ? 'disabled' : ''}`;
+    
+    let buttonText = 'Купить';
+    if (equipped) buttonText = 'Надето';
+    else if (owned) buttonText = 'Надеть';
     
     shopItem.innerHTML = `
       <div class="item-preview">${item.emoji}</div>
@@ -305,7 +572,7 @@ function renderShopItems(data) {
               data-item="${item.id}" data-price="${item.price}" 
               data-type="accessory"
               ${!canBuy ? 'disabled' : ''}>
-        ${equipped ? 'Надето' : owned ? 'Надеть' : 'Купить'}
+        ${buttonText}
       </button>
     `;
     
@@ -348,13 +615,21 @@ function renderShopItems(data) {
 }
 
 async function buyItem(item, price, type) {
+  console.log(`🛒 Buying ${type}: ${item} for ${price} coins`);
+  
   const userRef = ref(db, `users/${userId}`);
   const snapshot = await get(userRef);
+  
+  if (!snapshot.exists()) {
+    console.error("❌ No user data found!");
+    return;
+  }
+  
   let data = snapshot.val();
   
   data = degrade(data);
   
-  if (data.coins < price) {
+  if ((data.coins || 0) < price) {
     alert('Недостаточно монет!');
     return;
   }
@@ -379,29 +654,39 @@ async function buyItem(item, price, type) {
       // Покупка нового аксессуара
       data.accessories.push(item);
       data.currentAccessory = item;
-      data.coins -= price;
+      data.coins = (data.coins || 0) - price;
       showFloatingMessage(`Куплен ${getAccessoryName(item)}!`, 'action');
+      console.log(`✅ Bought new accessory: ${item}`);
     } else {
       // Переключение аксессуара
       if (data.currentAccessory === item) {
         data.currentAccessory = null;
         showFloatingMessage('Аксессуар снят', 'action');
+        console.log(`✅ Unequipped accessory: ${item}`);
       } else {
         data.currentAccessory = item;
         showFloatingMessage('Аксессуар надет', 'action');
+        console.log(`✅ Equipped accessory: ${item}`);
       }
     }
   } else if (type === 'breed') {
     if (data.breed !== item) {
       data.breed = item;
-      data.coins -= price;
+      data.coins = (data.coins || 0) - price;
       showFloatingMessage(`Порода изменена на ${getBreedName(item)}!`, 'action');
+      console.log(`✅ Changed breed to: ${item}`);
     }
   }
   
   data.lastUpdate = Date.now();
-  await set(userRef, data);
-  render(data);
+  
+  try {
+    await set(userRef, data);
+    console.log("✅ Purchase saved successfully");
+  } catch (error) {
+    console.error("❌ Error saving purchase:", error);
+    alert('Ошибка при сохранении покупки!');
+  }
 }
 
 function getAccessoryName(id) {
@@ -418,11 +703,17 @@ function getBreedName(id) {
 async function playDiceGame() {
   const userRef = ref(db, `users/${userId}`);
   const snapshot = await get(userRef);
+  
+  if (!snapshot.exists()) {
+    console.error("❌ No user data found!");
+    return;
+  }
+  
   let data = snapshot.val();
   
   data = degrade(data);
   
-  if (data.happiness < 20) {
+  if ((data.happiness || 0) < 20) {
     alert('😿 Кот слишком грустный для игры! Поднимите настроение.');
     return;
   }
@@ -441,28 +732,38 @@ async function playDiceGame() {
       SHOP_ITEMS.accessories.find(acc => acc.id === data.currentAccessory)?.bonus || 1 : 1;
     const coinsWon = Math.floor(15 * bonusMultiplier);
     
-    data.coins += coinsWon;
-    data.happiness = Math.min(100, data.happiness + 10);
+    data.coins = (data.coins || 0) + coinsWon;
+    data.happiness = Math.min(100, (data.happiness || 0) + 10);
     alert(`🎉 Вы выиграли! +${coinsWon} монет, +10 к настроению`);
     showFloatingMessage(`+${coinsWon} монет! 🎉`, "coins");
   } else {
-    data.happiness = Math.max(0, data.happiness - 5);
+    data.happiness = Math.max(0, (data.happiness || 0) - 5);
     alert(`😔 Выпало: ${dice}. Попробуйте еще раз! -5 к настроению`);
   }
   
   data.lastUpdate = Date.now();
-  await set(userRef, data);
-  render(data);
+  
+  try {
+    await set(userRef, data);
+  } catch (error) {
+    console.error("❌ Error saving game result:", error);
+  }
 }
 
 async function playClickGame() {
   const userRef = ref(db, `users/${userId}`);
   const snapshot = await get(userRef);
+  
+  if (!snapshot.exists()) {
+    console.error("❌ No user data found!");
+    return;
+  }
+  
   let data = snapshot.val();
   
   data = degrade(data);
   
-  if (data.happiness < 15) {
+  if ((data.happiness || 0) < 15) {
     alert('😿 Кот слишком грустный для игры!');
     return;
   }
@@ -487,8 +788,8 @@ async function playClickGame() {
           SHOP_ITEMS.accessories.find(acc => acc.id === data.currentAccessory)?.bonus || 1 : 1;
         const coinsWon = Math.floor(20 * bonusMultiplier);
         
-        data.coins += coinsWon;
-        data.happiness = Math.min(100, data.happiness + 15);
+        data.coins = (data.coins || 0) + coinsWon;
+        data.happiness = Math.min(100, (data.happiness || 0) + 15);
         alert(`🏆 Победа! +${coinsWon} монет, +15 к настроению! Время: ${(timeUsed/1000).toFixed(2)}с`);
         showFloatingMessage(`+${coinsWon} монет! 🏆`, "coins");
       } else {
@@ -503,8 +804,8 @@ async function playClickGame() {
     petAvatar.style.cursor = originalCursor;
     data.lastUpdate = Date.now();
     
-    set(userRef, data).then(() => {
-      render(data);
+    set(userRef, data).catch(error => {
+      console.error("❌ Error saving click game result:", error);
     });
   };
   
@@ -535,18 +836,23 @@ function showFloatingMessage(text, type = 'action') {
 
 // Настройка обработчиков событий
 function setupEventListeners() {
+  console.log("🔧 Setting up event listeners...");
+  
   // Основные действия
   document.getElementById('feed').addEventListener('click', () => {
+    console.log("🍽️ Feed button clicked");
     updateStat('hunger', -25);
     showFloatingMessage("Ням-ням! 🍖", "action");
   });
   
   document.getElementById('play').addEventListener('click', () => {
+    console.log("🧶 Play button clicked");
     updateStat('happiness', +15);
     showFloatingMessage("Весело! 🎾", "action");
   });
   
   document.getElementById('wash').addEventListener('click', () => {
+    console.log("🛁 Wash button clicked");
     updateStat('cleanliness', +20);
     showFloatingMessage("Чистота! ✨", "action");
   });
@@ -557,6 +863,7 @@ function setupEventListeners() {
   
   // Магазин
   document.getElementById('open-shop').addEventListener('click', () => {
+    console.log("🏪 Opening shop");
     document.getElementById('shop-modal').style.display = 'flex';
   });
   
@@ -579,46 +886,61 @@ function setupEventListeners() {
   
   // Система имени
   setupNameSystem();
+  
+  console.log("✅ Event listeners setup complete");
 }
 
 // Основная функция инициализации
 async function initApp() {
+  console.log("🚀 Starting app initialization...");
+  
   try {
     await loginWithTelegramId();
-    const userRef = ref(db, `users/${userId}`);
+    console.log("✅ Firebase authentication successful");
     
+    const userRef = ref(db, `users/${userId}`);
     const snapshot = await get(userRef);
+    
     if (!snapshot.exists()) {
+      console.log("🆕 No user data found, creating initial data...");
       await initUserData(userRef);
     } else {
+      console.log("✅ User data found, applying degradation...");
       let data = snapshot.val();
+      console.log("📋 Loaded user data:", data);
       data = degrade(data);
       await set(userRef, data);
+      console.log("✅ Degradation applied and saved");
     }
     
     // Слушатель реального времени
+    console.log("👂 Setting up real-time listener...");
     onValue(userRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
+        console.log("🔄 Real-time update received:", data);
         render(data);
+      } else {
+        console.error("❌ No data in real-time update");
       }
     });
     
     return true;
     
   } catch (error) {
-    console.error("Failed to initialize app:", error);
+    console.error("❌ Failed to initialize app:", error);
     throw error;
   }
 }
 
 // Запуск приложения
+console.log("🎮 Starting application...");
 initApp()
   .then(() => {
+    console.log("✅ App initialized successfully");
     setupEventListeners();
     showFloatingMessage("Добро пожаловать! 🐱", "action");
   })
   .catch(error => {
-    console.error("Failed to initialize app:", error);
-    alert("❌ Ошибка инициализации приложения.");
-  });
+    console.error("❌ Failed to initialize app:", error);
+    alert("❌ Ошибка инициализации приложения. Провер
