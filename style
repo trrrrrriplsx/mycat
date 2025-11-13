@@ -88,3 +88,155 @@ button:hover {
     background-color: #45a049;
   }
 }
+/* Стили для улучшенной версии */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 1.2em;
+  margin: 20px 0 10px;
+  color: #666;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.pet-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.stat-item {
+  margin: 15px 0;
+  text-align: left;
+}
+
+.stat-label {
+  font-weight: bold;
+  display: inline-block;
+  width: 120px;
+}
+
+.stat-value {
+  font-weight: bold;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #eee;
+  border-radius: 4px;
+  margin: 5px 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.hunger-fill { background: #FF9800; }
+.happiness-fill { background: #2196F3; }
+.cleanliness-fill { background: #4CAF50; }
+
+.actions, .games, .shop {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.action-btn, .game-btn, .shop-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  font-size: 1.1em;
+}
+
+.btn-icon {
+  font-size: 1.3em;
+}
+
+/* Модальное окно */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 2em;
+  cursor: pointer;
+  color: #666;
+}
+
+.shop-category {
+  margin-bottom: 25px;
+}
+
+.category-title {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.1em;
+}
+
+.items-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.item-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.item-icon {
+  font-size: 1.2em;
+}
+
+.item-name {
+  font-weight: bold;
+}
+
+.modal-footer {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+/* Уведомления */
+.notifications {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
