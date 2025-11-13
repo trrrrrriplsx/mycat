@@ -4,13 +4,13 @@ import { getDatabase, ref, get, set, onValue } from 'https://www.gstatic.com/fir
 
 // Твои настройки Firebase
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "your-project.firebaseapp.com",
-  databaseURL: "https://your-project-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "your-project",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef1234567890"
+  apiKey: "AIzaSyAWNfjIZH6g9OA5i3pgGwZNOOsRI-J_bLQ",
+  authDomain: "my-pet-e61e4.firebaseapp.com",
+  databaseURL: "https://my-pet-e61e4-default-rtdb.firebaseio.com",
+  projectId: "my-pet-e61e4",
+  storageBucket: "my-pet-e61e4.firebasestorage.app",
+  messagingSenderId: "105977367505",
+  appId: "1:105977367505:web:f23e83bc8efc7835c6aef0"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -225,3 +225,4 @@ document.getElementById('close-shop').onclick = () => {
 
 // Запуск
 initApp().catch(console.error);
+
