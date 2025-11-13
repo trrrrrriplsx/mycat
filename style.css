@@ -1,209 +1,89 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* Анимации и улучшения */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  margin: 0;
-  padding: 20px;
-  background-color: #f0f2f5;
-  color: #333;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-h1 {
-  text-align: center;
-  font-size: clamp(1.5rem, 4vw, 2rem);
-  margin-bottom: 20px;
+.pulse {
+  animation: pulse 0.5s ease-in-out;
 }
 
-#pet-avatar {
-  font-size: 6em;
-  text-align: center;
-  margin: 20px 0;
-  transition: transform 0.1s;
+.bounce {
+  animation: bounce 0.5s ease-in-out;
 }
 
-#pet-avatar:active {
-  transform: scale(0.95);
-}
-
-#pet-container {
-  position: relative;
-  display: inline-block;
-}
-
-#accessory {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 2em;
-  z-index: 10;
-}
-
-.coins {
-  font-size: 1.2em;
+/* Статусные индикаторы */
+.status-low {
+  color: #ff4444 !important;
   font-weight: bold;
-  margin-bottom: 10px;
 }
 
-.stats {
-  background-color: white;
-  padding: 18px;
-  border-radius: 12px;
-  margin: 10px;
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+.status-medium {
+  color: #ffaa00 !important;
 }
 
-.stats > div {
-  margin: 8px 0;
-  font-size: 1.1em;
+.status-high {
+  color: #00aa00 !important;
 }
 
-.actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 25px;
-  width: 100%;
-  max-width: 400px;
-}
-
-.games {
-  margin-top: 20px;
-  width: 100%;
-  max-width: 400px;
-}
-
-.games button {
-  width: 100%;
-  padding: 14px;
-  font-size: 1.1em;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  background-color: #2196F3;
-  color: white;
-  font-weight: bold;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  transition: background-color 0.2s, transform 0.1s;
-}
-
-.games button:active {
-  background-color: #1e88e5;
-  transform: scale(0.98);
-}
-
-.shop {
-  margin-top: 20px;
-  width: 100%;
-  max-width: 400px;
-}
-
-.shop button {
-  width: 100%;
-  padding: 14px;
-  font-size: 1.1em;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  background-color: #FF9800;
-  color: white;
-  font-weight: bold;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  transition: background-color 0.2s, transform 0.1s;
-}
-
-.shop button:active {
-  background-color: #f57c00;
-  transform: scale(0.98);
-}
-
-button {
-  padding: 18px;
-  font-size: 1.2em;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  background-color: #4CAF50;
-  color: white;
-  font-weight: bold;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  transition: background-color 0.2s, transform 0.1s;
-}
-
-button:active {
-  background-color: #45a049;
-  transform: scale(0.98);
-}
-
-.modal {
+/* Уведомления */
+.notification {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 20px;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
   border-radius: 10px;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.modal-content h2 {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.shop-items {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
-.buy-btn {
-  padding: 8px 12px;
-  font-size: 0.9em;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: #4CAF50;
   color: white;
+  font-weight: bold;
+  z-index: 1001;
+  animation: slideIn 0.3s ease-out;
 }
 
-.buy-btn:active {
-  background-color: #45a049;
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
-@media (hover: hover) {
-  button:hover {
-    background-color: #45a049;
+/* Адаптивность для очень маленьких экранов */
+@media (max-width: 320px) {
+  body {
+    padding: 10px;
+  }
+  
+  #pet-avatar {
+    font-size: 4em;
+  }
+  
+  button {
+    padding: 14px;
+    font-size: 1em;
+  }
+}
+
+/* Темная тема для Telegram */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1e1e1e;
+    color: #ffffff;
+  }
+  
+  .stats {
+    background-color: #2d2d2d;
+    color: #ffffff;
+  }
+  
+  .modal-content {
+    background-color: #2d2d2d;
+    color: #ffffff;
+  }
+  
+  .item {
+    border-color: #444;
   }
 }
