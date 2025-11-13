@@ -325,19 +325,10 @@ body {
   position: relative;
 }
 
-/* ЦВЕТНЫЕ ПОЛОСКИ - ИСПРАВЛЕНО */
-.hunger-fill { 
-  background: linear-gradient(90deg, #FF6B6B, #FF8E53);
-  width: 50% !important; /* Для теста */
-}
-.happiness-fill { 
-  background: linear-gradient(90deg, #4ECDC4, #44A08D);
-  width: 80% !important; /* Для теста */
-}
-.cleanliness-fill { 
-  background: linear-gradient(90deg, #45B7D1, #96C93D);
-  width: 80% !important; /* Для теста */
-}
+/* ИСПРАВЛЕННЫЕ ЦВЕТА ПОЛОСОК - теперь они будут меняться через JS */
+.progress-fill[data-type="hunger"] { background: linear-gradient(90deg, #FF6B6B, #FF8E53); }
+.progress-fill[data-type="happiness"] { background: linear-gradient(90deg, #4ECDC4, #44A08D); }
+.progress-fill[data-type="cleanliness"] { background: linear-gradient(90deg, #45B7D1, #96C93D); }
 
 /* ===== Actions Section ===== */
 .section-title {
@@ -482,7 +473,7 @@ body {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
-  display: none; /* По умолчанию скрыто */
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 1000;
@@ -702,6 +693,54 @@ body {
 
 .save-name-btn:active, .cancel-name-btn:active {
   transform: scale(0.95);
+}
+
+/* ===== Уведомления ===== */
+.floating-message {
+  position: fixed;
+  z-index: 10000;
+  pointer-events: none;
+  font-weight: bold;
+  text-align: center;
+  animation: floatUp 1.5s ease-out forwards;
+}
+
+.floating-message.action {
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  padding: 12px 24px;
+  border-radius: 25px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+}
+
+.floating-message.coins {
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.4rem;
+  padding: 10px 20px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+}
+
+@keyframes floatUp {
+  0% { 
+    opacity: 0; 
+    transform: translate(-50%, -20px); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: translate(-50%, -50px); 
+  }
+  100% { 
+    opacity: 0; 
+    transform: translate(-50%, -80px); 
+  }
 }
 
 /* Responsive */
