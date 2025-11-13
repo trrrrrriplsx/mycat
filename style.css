@@ -1,89 +1,474 @@
-/* Анимации и улучшения */
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@keyframes bounce {
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+  color: #333;
+}
+
+.app-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Шапка */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.coins-card {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 12px 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.coins-icon {
+  font-size: 24px;
+  margin-right: 8px;
+}
+
+.coins-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.coins-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.coins-amount {
+  font-size: 18px;
+  font-weight: bold;
+  color: #FFD700;
+}
+
+.app-title {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Карточка кота */
+.pet-section {
+  margin-bottom: 20px;
+}
+
+.pet-card {
+  background: white;
+  border-radius: 24px;
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.pet-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #FF6B6B, #4ECDC4, #45B7D1);
+}
+
+.pet-container {
+  position: relative;
+  display: inline-block;
+}
+
+.pet-avatar {
+  font-size: 80px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.pet-avatar:active {
+  transform: scale(0.95);
+}
+
+.accessory {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 32px;
+  z-index: 10;
+}
+
+.pet-name {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #555;
+}
+
+/* Статистика */
+.stats-section {
+  margin-bottom: 20px;
+}
+
+.stats-card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stat-item {
+  margin-bottom: 20px;
+}
+
+.stat-item:last-child {
+  margin-bottom: 0;
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.stat-icon {
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.stat-label {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.stat-max {
+  font-size: 14px;
+  color: #999;
+  font-weight: normal;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hunger-fill { background: linear-gradient(90deg, #FF6B6B, #FF8E53); }
+.happiness-fill { background: linear-gradient(90deg, #4ECDC4, #44A08D); }
+.cleanliness-fill { background: linear-gradient(90deg, #45B7D1, #96C93D); }
+
+/* Кнопки действий */
+.section-title {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.btn-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+}
+
+/* Игры */
+.games-grid {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.game-btn {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.game-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.game-btn .btn-icon {
+  font-size: 28px;
+  margin-right: 12px;
+  margin-bottom: 0;
+}
+
+.game-btn .btn-text {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.btn-subtext {
+  font-size: 11px;
+  color: #888;
+  font-weight: 500;
+}
+
+/* Магазин */
+.shop-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 18px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.shop-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 3px 10px rgba(255, 107, 107, 0.6);
+}
+
+.shop-btn .btn-icon {
+  margin-right: 8px;
+  margin-bottom: 0;
+  font-size: 20px;
+}
+
+/* Модальное окно */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.modal-header h2 {
+  color: #333;
+  font-size: 20px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shop-items {
+  padding: 20px;
+}
+
+.shop-category {
+  margin-bottom: 25px;
+}
+
+.shop-category h3 {
+  color: #555;
+  font-size: 16px;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.items-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shop-item {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 12px;
+  transition: all 0.3s ease;
+}
+
+.shop-item:hover {
+  background: #e9ecef;
+}
+
+.item-preview {
+  font-size: 32px;
+  margin-right: 12px;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.item-price {
+  font-size: 14px;
+  color: #FFD700;
+  font-weight: 600;
+}
+
+.buy-btn {
+  background: linear-gradient(135deg, #4ECDC4, #44A08D);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.buy-btn:active {
+  transform: scale(0.95);
+}
+
+/* Анимации */
+@keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
 }
 
-.pulse {
-  animation: pulse 0.5s ease-in-out;
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
-.bounce {
-  animation: bounce 0.5s ease-in-out;
+.pet-avatar {
+  animation: float 3s ease-in-out infinite;
 }
 
-/* Статусные индикаторы */
-.status-low {
-  color: #ff4444 !important;
-  font-weight: bold;
-}
-
-.status-medium {
-  color: #ffaa00 !important;
-}
-
-.status-high {
-  color: #00aa00 !important;
-}
-
-/* Уведомления */
-.notification {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 15px 20px;
-  border-radius: 10px;
-  color: white;
-  font-weight: bold;
-  z-index: 1001;
-  animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-/* Адаптивность для очень маленьких экранов */
-@media (max-width: 320px) {
+/* Адаптивность */
+@media (max-width: 380px) {
   body {
-    padding: 10px;
+    padding: 15px;
   }
   
-  #pet-avatar {
-    font-size: 4em;
+  .pet-avatar {
+    font-size: 60px;
   }
   
-  button {
-    padding: 14px;
-    font-size: 1em;
-  }
-}
-
-/* Темная тема для Telegram */
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #1e1e1e;
-    color: #ffffff;
+  .actions-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
   
-  .stats {
-    background-color: #2d2d2d;
-    color: #ffffff;
+  .action-btn {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 12px;
   }
   
-  .modal-content {
-    background-color: #2d2d2d;
-    color: #ffffff;
-  }
-  
-  .item {
-    border-color: #444;
+  .action-btn .btn-icon {
+    margin-right: 8px;
+    margin-bottom: 0;
   }
 }
