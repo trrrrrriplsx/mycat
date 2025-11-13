@@ -4,14 +4,14 @@ import { getDatabase, ref, get, set, onValue } from 'https://www.gstatic.com/fir
 
 // Твои настройки Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyAWNfjIZH6g9OA5i3pgGwZNOOsRI-J_bLQ",
-  authDomain: "my-pet-e61e4.firebaseapp.com",
-  databaseURL: "https://my-pet-e61e4-default-rtdb.firebaseio.com",
-  projectId: "my-pet-e61e4",
-  storageBucket: "my-pet-e61e4.firebasestorage.app",
-  messagingSenderId: "105977367505",
-  appId: "1:105977367505:web:f23e83bc8efc7835c6aef0"
-};
+    apiKey: "AIzaSyAWNfjIZH6g9OA5i3pgGwZNOOsRI-J_bLQ",
+    authDomain: "my-pet-e61e4.firebaseapp.com",
+    databaseURL: "https://my-pet-e61e4-default-rtdb.firebaseio.com",
+    projectId: "my-pet-e61e4",
+    storageBucket: "my-pet-e61e4.firebasestorage.app",
+    messagingSenderId: "105977367505",
+    appId: "1:105977367505:web:f23e83bc8efc7835c6aef0"
+  };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -200,29 +200,38 @@ async function buyItem(item, price) {
   }
 }
 
-// Обработчики кнопок
-document.getElementById('feed').onclick = () => updateStat('hunger', -30);
-document.getElementById('play').onclick = () => updateStat('happiness', +20);
-document.getElementById('wash').onclick = () => updateStat('cleanliness', +25);
-document.getElementById('dice-game').onclick = playDiceGame;
-document.getElementById('click-game').onclick = playClickGame;
+// Функция для установки обработчиков кнопок (вызывается после успешной инициализации)
+function setupEventListeners() {
+  document.getElementById('feed').onclick = () => updateStat('hunger', -30);
+  document.getElementById('play').onclick = () => updateStat('happiness', +20);
+  document.getElementById('wash').onclick = () => updateStat('cleanliness', +25);
+  document.getElementById('dice-game').onclick = playDiceGame;
+  document.getElementById('click-game').onclick = playClickGame;
 
-document.querySelectorAll('.buy-btn').forEach(button => {
-  button.onclick = () => {
-    const item = button.dataset.item;
-    const price = parseInt(button.dataset.price);
-    buyItem(item, price);
+  document.querySelectorAll('.buy-btn').forEach(button => {
+    button.onclick = () => {
+      const item = button.dataset.item;
+      const price = parseInt(button.dataset.price);
+      buyItem(item, price);
+    };
+  });
+
+  document.getElementById('open-shop').onclick = () => {
+    document.getElementById('shop-modal').style.display = 'block';
   };
-});
 
-document.getElementById('open-shop').onclick = () => {
-  document.getElementById('shop-modal').style.display = 'block';
-};
-
-document.getElementById('close-shop').onclick = () => {
-  document.getElementById('shop-modal').style.display = 'none';
-};
+  document.getElementById('close-shop').onclick = () => {
+    document.getElementById('shop-modal').style.display = 'none';
+  };
+}
 
 // Запуск
-initApp().catch(console.error);
-
+initApp()
+  .then(() => {
+    console.log("App initialized successfully");
+    setupEventListeners(); // Устанавливаем обработчики только после успешной инициализации
+  })
+  .catch(error => {
+    console.error("Failed to initialize app:", error);
+    alert("Ошибка инициализации приложения. Проверь консоль.");
+  });
