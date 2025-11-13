@@ -1,0 +1,90 @@
+/* Обнуляем стандартные отступы */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f0f2f5;
+  color: #333;
+  min-height: 100vh;
+  /* Растягиваем по высоте */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  text-align: center;
+  font-size: clamp(1.5rem, 4vw, 2rem); /* Адаптивный шрифт */
+  margin-bottom: 20px;
+}
+
+#pet-avatar {
+  font-size: 6em; /* Больше для удобства */
+  text-align: center;
+  margin: 20px 0;
+  transition: transform 0.1s; /* Анимация при нажатии */
+}
+
+#pet-avatar:active {
+  transform: scale(0.95);
+}
+
+.stats {
+  background-color: white;
+  padding: 18px;
+  border-radius: 12px;
+  margin: 10px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.stats > div {
+  margin: 8px 0;
+  font-size: 1.1em;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 25px;
+  width: 100%;
+  max-width: 400px;
+}
+
+button {
+  padding: 18px;
+  font-size: 1.2em;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+button:active {
+  background-color: #45a049;
+  transform: scale(0.98);
+}
+
+button:hover {
+  background-color: #45a049; /* Убираем hover на мобильных */
+}
+
+/* Убираем hover для мобильных устройств */
+@media (hover: hover) {
+  button:hover {
+    background-color: #45a049;
+  }
+}
