@@ -30,7 +30,12 @@
             <div id="pet-avatar" class="pet-avatar">🐱</div>
             <div id="accessory" class="accessory" style="display: none;"></div>
           </div>
-          <div class="pet-name">Пушистик</div>
+          <div class="name-section">
+            <div class="name-display">
+              <span id="pet-name-display">Пушистик</span>
+              <button id="edit-name-btn" class="edit-name-btn">✏️</button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -97,13 +102,17 @@
         <div class="games-grid">
           <button id="dice-game" class="game-btn dice-btn">
             <span class="btn-icon">🎲</span>
-            <span class="btn-text">Игра в кости</span>
-            <span class="btn-subtext">Выиграй до 15 монет</span>
+            <div class="game-content">
+              <span class="btn-text">Игра в кости</span>
+              <span class="btn-subtext">Выиграй до 15 монет</span>
+            </div>
           </button>
           <button id="click-game" class="game-btn click-btn">
             <span class="btn-icon">🎯</span>
-            <span class="btn-text">Попади в цель</span>
-            <span class="btn-subtext">Выиграй до 20 монет</span>
+            <div class="game-content">
+              <span class="btn-text">Попади в цель</span>
+              <span class="btn-subtext">Выиграй до 20 монет</span>
+            </div>
           </button>
         </div>
       </section>
@@ -129,67 +138,38 @@
       <div class="shop-items">
         <div class="shop-category">
           <h3>🎩 Аксессуары</h3>
-          <div class="items-grid">
-            <div class="shop-item">
-              <div class="item-preview">🎩</div>
-              <div class="item-info">
-                <div class="item-name">Элегантная шляпа</div>
-                <div class="item-price">50 🪙</div>
-              </div>
-              <button class="buy-btn" data-item="hat" data-price="50">Купить</button>
-            </div>
-            
-            <div class="shop-item">
-              <div class="item-preview">🎀</div>
-              <div class="item-info">
-                <div class="item-name">Стильный бант</div>
-                <div class="item-price">30 🪙</div>
-              </div>
-              <button class="buy-btn" data-item="bow" data-price="30">Купить</button>
-            </div>
-            
-            <div class="shop-item">
-              <div class="item-preview">👓</div>
-              <div class="item-info">
-                <div class="item-name">Крутые очки</div>
-                <div class="item-price">70 🪙</div>
-              </div>
-              <button class="buy-btn" data-item="glasses" data-price="70">Купить</button>
-            </div>
+          <div class="items-grid" id="accessories-grid">
+            <!-- Аксессуары будут добавляться через JS -->
           </div>
         </div>
 
         <div class="shop-category">
           <h3>🐾 Породы котиков</h3>
-          <div class="items-grid">
-            <div class="shop-item">
-              <div class="item-preview">🐈</div>
-              <div class="item-info">
-                <div class="item-name">Сиамский</div>
-                <div class="item-price">100 🪙</div>
-              </div>
-              <button class="buy-btn" data-item="siamese" data-price="100">Купить</button>
-            </div>
-            
-            <div class="shop-item">
-              <div class="item-preview">🐈‍⬛</div>
-              <div class="item-info">
-                <div class="item-name">Мейн-кун</div>
-                <div class="item-price">150 🪙</div>
-              </div>
-              <button class="buy-btn" data-item="maine" data-price="150">Купить</button>
-            </div>
-            
-            <div class="shop-item">
-              <div class="item-preview">🐱</div>
-              <div class="item-info">
-                <div class="item-name">Персидский</div>
-                <div class="item-price">200 🪙</div>
-              </div>
-              <button class="buy-btn" data-item="persian" data-price="200">Купить</button>
-            </div>
+          <div class="items-grid" id="breeds-grid">
+            <!-- Породы будут добавляться через JS -->
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно для смены имени -->
+  <div id="name-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Смена имени кота</h2>
+        <button id="close-name-modal" class="close-btn">×</button>
+      </div>
+      <div class="modal-body">
+        <p id="name-change-warning" style="color: #FF6B6B; font-size: 14px; margin-bottom: 15px; display: none;">
+          ⚠️ Вы можете сменить имя только один раз!
+        </p>
+        <input type="text" id="name-input" class="name-input" placeholder="Введите новое имя" maxlength="20">
+        <div class="name-char-count"><span id="char-count">0</span>/20</div>
+      </div>
+      <div class="modal-footer">
+        <button id="save-name-btn" class="save-name-btn">Сохранить имя</button>
+        <button id="cancel-name-btn" class="cancel-name-btn">Отмена</button>
       </div>
     </div>
   </div>
