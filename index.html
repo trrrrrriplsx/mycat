@@ -9,7 +9,13 @@
 </head>
 <body>
   <h1>Мой кот</h1>
-  <div id="pet-avatar">🐱</div>
+
+  <div class="coins">Монеты: <span id="coins">0</span></div>
+
+  <div id="pet-container">
+    <div id="pet-avatar">🐱</div>
+    <div id="accessory" style="display: none;"></div>
+  </div>
 
   <div class="stats">
     <div>Голод: <span id="hunger">0</span>/100</div>
@@ -21,6 +27,48 @@
     <button id="feed">🍽 Кормить</button>
     <button id="play">🧶 Играть</button>
     <button id="wash">🛁 Мыть</button>
+  </div>
+
+  <div class="games">
+    <button id="dice-game">🎲 Игра в кости</button>
+    <button id="click-game">🎯 Попади в цель</button>
+  </div>
+
+  <div class="shop">
+    <button id="open-shop">🛒 Магазин</button>
+  </div>
+
+  <div id="shop-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <h2>Магазин</h2>
+      <div class="shop-items">
+        <div class="item">
+          <span>Шляпа 🎩</span>
+          <button class="buy-btn" data-item="hat" data-price="50">Купить за 50</button>
+        </div>
+        <div class="item">
+          <span>Бант 🎀</span>
+          <button class="buy-btn" data-item="bow" data-price="30">Купить за 30</button>
+        </div>
+        <div class="item">
+          <span>Очки 👓</span>
+          <button class="buy-btn" data-item="glasses" data-price="70">Купить за 70</button>
+        </div>
+        <div class="item">
+          <span>Сиамский</span>
+          <button class="buy-btn" data-item="siamese" data-price="100">Купить за 100</button>
+        </div>
+        <div class="item">
+          <span>Мейн-кун</span>
+          <button class="buy-btn" data-item="maine" data-price="150">Купить за 150</button>
+        </div>
+        <div class="item">
+          <span>Перс</span>
+          <button class="buy-btn" data-item="persian" data-price="200">Купить за 200</button>
+        </div>
+      </div>
+      <button id="close-shop">Закрыть</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
