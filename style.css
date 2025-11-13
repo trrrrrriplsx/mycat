@@ -1,4 +1,3 @@
-/* Обнуляем стандартные отступы */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -12,7 +11,6 @@ body {
   background-color: #f0f2f5;
   color: #333;
   min-height: 100vh;
-  /* Растягиваем по высоте */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,15 +18,15 @@ body {
 
 h1 {
   text-align: center;
-  font-size: clamp(1.5rem, 4vw, 2rem); /* Адаптивный шрифт */
+  font-size: clamp(1.5rem, 4vw, 2rem);
   margin-bottom: 20px;
 }
 
 #pet-avatar {
-  font-size: 6em; /* Больше для удобства */
+  font-size: 6em;
   text-align: center;
   margin: 20px 0;
-  transition: transform 0.1s; /* Анимация при нажатии */
+  transition: transform 0.1s;
 }
 
 #pet-avatar:active {
@@ -78,11 +76,6 @@ button:active {
   transform: scale(0.98);
 }
 
-button:hover {
-  background-color: #45a049; /* Убираем hover на мобильных */
-}
-
-/* Убираем hover для мобильных устройств */
 @media (hover: hover) {
   button:hover {
     background-color: #45a049;
