@@ -4,14 +4,14 @@ import { getDatabase, ref, get, set, onValue } from 'https://www.gstatic.com/fir
 
 // Твои настройки Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyAWNfjIZH6g9OA5i3pgGwZNOOsRI-J_bLQ",
-    authDomain: "my-pet-e61e4.firebaseapp.com",
-    databaseURL: "https://my-pet-e61e4-default-rtdb.firebaseio.com",
-    projectId: "my-pet-e61e4",
-    storageBucket: "my-pet-e61e4.firebasestorage.app",
-    messagingSenderId: "105977367505",
-    appId: "1:105977367505:web:f23e83bc8efc7835c6aef0"
-  };
+  apiKey: "AIzaSyAWNfjIZH6g9OA5i3pgGwZNOOsRI-J_bLQ",
+  authDomain: "my-pet-e61e4.firebaseapp.com",
+  databaseURL: "https://my-pet-e61e4-default-rtdb.firebaseio.com",
+  projectId: "my-pet-e61e4",
+  storageBucket: "my-pet-e61e4.firebasestorage.app",
+  messagingSenderId: "105977367505",
+  appId: "1:105977367505:web:f23e83bc8efc7835c6aef0"
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -121,6 +121,7 @@ async function updateStat(field, delta) {
   data[field] = Math.min(100, Math.max(0, data[field] + delta));
   data.lastUpdate = Date.now();
   await set(userRef, data);
+  render(data); // ✅ Обновляем интерфейс сразу
 }
 
 // Мини-игры
@@ -142,6 +143,7 @@ async function playDiceGame() {
 
   data.lastUpdate = Date.now();
   await set(userRef, data);
+  render(data); // ✅ Обновляем интерфейс
 }
 
 async function playClickGame() {
@@ -198,6 +200,7 @@ async function buyItem(item, price) {
   } else {
     alert("Недостаточно монет :(");
   }
+  render(data); // ✅ Обновляем интерфейс
 }
 
 // Функция для установки обработчиков кнопок (вызывается после успешной инициализации)
