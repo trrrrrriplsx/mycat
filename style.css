@@ -325,9 +325,19 @@ body {
   position: relative;
 }
 
-.hunger-fill { background: linear-gradient(90deg, #FF6B6B, #FF8E53); }
-.happiness-fill { background: linear-gradient(90deg, #4ECDC4, #44A08D); }
-.cleanliness-fill { background: linear-gradient(90deg, #45B7D1, #96C93D); }
+/* ЦВЕТНЫЕ ПОЛОСКИ - ИСПРАВЛЕНО */
+.hunger-fill { 
+  background: linear-gradient(90deg, #FF6B6B, #FF8E53);
+  width: 50% !important; /* Для теста */
+}
+.happiness-fill { 
+  background: linear-gradient(90deg, #4ECDC4, #44A08D);
+  width: 80% !important; /* Для теста */
+}
+.cleanliness-fill { 
+  background: linear-gradient(90deg, #45B7D1, #96C93D);
+  width: 80% !important; /* Для теста */
+}
 
 /* ===== Actions Section ===== */
 .section-title {
@@ -472,7 +482,7 @@ body {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
-  display: flex;
+  display: none; /* По умолчанию скрыто */
   justify-content: center;
   align-items: center;
   z-index: 1000;
