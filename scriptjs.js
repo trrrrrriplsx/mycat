@@ -1,20 +1,21 @@
-// Подключение Firebase SDK
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { getDatabase, ref, get, set, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-// Твои настройки Firebase (их нужно будет вставить)
+// Твои настройки Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyAWNfjIZH6g9OA5i3pgGwZNOOsRI-J_bLQ",
-    authDomain: "my-pet-e61e4.firebaseapp.com",
-    databaseURL: "https://my-pet-e61e4-default-rtdb.firebaseio.com",
-    projectId: "my-pet-e61e4",
-    storageBucket: "my-pet-e61e4.firebasestorage.app",
-    messagingSenderId: "105977367505",
-    appId: "1:105977367505:web:f23e83bc8efc7835c6aef0"
-  };
+  apiKey: "YOUR_API_KEY",
+  authDomain: "your-project.firebaseapp.com",
+  databaseURL: "https://your-project-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "your-project",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef1234567890"
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const auth = getAuth(app);
 
 // Telegram
 const tg = window.Telegram.WebApp;
@@ -28,10 +29,26 @@ if (!user) {
 }
 
 const userId = user.id.toString();
-const userRef = ref(db, `users/${userId}`);
 
-// Инициализация данных пользователя
-async function initUser() {
+// Получение токена с бэкенда
+async function getCustomToken(userId) {
+  const response = await fetch(`https://tg-pet-api.onrender.com/api/token?uid=${userId}`);
+  const data = await response.json();
+  return data.token;
+}
+
+// Вход в Firebase с кастомным токеном
+async function loginWithTelegramId() {
+  const token = await getCustomToken(userId);
+  await signInWithCustomToken(auth, token);
+}
+
+// Инициализация
+async function initApp() {
+  await loginWithTelegramId();
+  const userRef = ref(db, `users/${userId}`);
+
+  // Инициализация данных пользователя
   const snapshot = await get(userRef);
   if (!snapshot.exists()) {
     const initialData = {
@@ -46,9 +63,13 @@ async function initUser() {
       currentAccessory: null
     };
     await set(userRef, initialData);
-    return initialData;
   }
-  return snapshot.val();
+
+  // Отображение данных
+  onValue(userRef, (snapshot) => {
+    const data = snapshot.val();
+    render(data);
+  });
 }
 
 // Обновление интерфейса
@@ -93,17 +114,18 @@ function degrade(data) {
 
 // Обновление параметра
 async function updateStat(field, delta) {
+  const userRef = ref(db, `users/${userId}`);
   const snapshot = await get(userRef);
   let data = snapshot.val();
   data = degrade(data);
   data[field] = Math.min(100, Math.max(0, data[field] + delta));
   data.lastUpdate = Date.now();
   await set(userRef, data);
-  render(data);
 }
 
 // Мини-игры
 async function playDiceGame() {
+  const userRef = ref(db, `users/${userId}`);
   const snapshot = await get(userRef);
   let data = snapshot.val();
   data = degrade(data);
@@ -120,10 +142,10 @@ async function playDiceGame() {
 
   data.lastUpdate = Date.now();
   await set(userRef, data);
-  render(data);
 }
 
 async function playClickGame() {
+  const userRef = ref(db, `users/${userId}`);
   const snapshot = await get(userRef);
   let data = snapshot.val();
   data = degrade(data);
@@ -155,6 +177,7 @@ async function playClickGame() {
 
 // Покупка в магазине
 async function buyItem(item, price) {
+  const userRef = ref(db, `users/${userId}`);
   const snapshot = await get(userRef);
   let data = snapshot.val();
   data = degrade(data);
@@ -175,15 +198,7 @@ async function buyItem(item, price) {
   } else {
     alert("Недостаточно монет :(");
   }
-  render(data);
 }
-
-// Загрузка и отображение
-initUser().then(data => {
-  data = degrade(data);
-  render(data);
-  set(userRef, data); // Сохраняем деградировавшее состояние
-});
 
 // Обработчики кнопок
 document.getElementById('feed').onclick = () => updateStat('hunger', -30);
@@ -207,3 +222,6 @@ document.getElementById('open-shop').onclick = () => {
 document.getElementById('close-shop').onclick = () => {
   document.getElementById('shop-modal').style.display = 'none';
 };
+
+// Запуск
+initApp().catch(console.error);
