@@ -751,8 +751,6 @@ initApp()
     console.log("✅ App initialized successfully");
     setupEventListeners();
     showFloatingMessage("Добро пожаловать! 🐱", "action");
-  })
-  .catch(error => {
-    console.error("❌ Failed to initialize app:", error);
-    alert("❌ Ошибка инициализации приложения. Проверьте консоль для подробностей.");
   });
+ 
+
