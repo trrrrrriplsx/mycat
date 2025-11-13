@@ -105,15 +105,18 @@ function updateProgressBars(data) {
     const element = document.getElementById(stat.id);
     const fillElement = document.querySelector(`.${stat.fill}`);
     
-    element.textContent = stat.value;
-    fillElement.style.width = `${stat.value}%`;
-    
-    if (stat.value < 30) {
-      element.style.color = '#ff4444';
-    } else if (stat.value < 70) {
-      element.style.color = '#ffaa00';
-    } else {
-      element.style.color = '#00aa00';
+    if (element && fillElement) {
+      element.textContent = stat.value;
+      fillElement.style.width = `${stat.value}%`;
+      
+      // Обновляем цвета в зависимости от значений
+      if (stat.value < 30) {
+        element.style.color = '#ff4444';
+      } else if (stat.value < 70) {
+        element.style.color = '#ffaa00';
+      } else {
+        element.style.color = '#00aa00';
+      }
     }
   });
 }
@@ -129,13 +132,17 @@ function updatePetAppearance(data) {
     persian: '🐱'
   };
   
-  petAvatar.textContent = breedEmojis[data.breed] || '🐱';
+  if (petAvatar) {
+    petAvatar.textContent = breedEmojis[data.breed] || '🐱';
+  }
   
-  if (data.currentAccessory) {
-    accessoryEl.style.display = 'block';
-    accessoryEl.textContent = getAccessoryEmoji(data.currentAccessory);
-  } else {
-    accessoryEl.style.display = 'none';
+  if (accessoryEl) {
+    if (data.currentAccessory) {
+      accessoryEl.style.display = 'block';
+      accessoryEl.textContent = getAccessoryEmoji(data.currentAccessory);
+    } else {
+      accessoryEl.style.display = 'none';
+    }
   }
 }
 
@@ -169,4 +176,454 @@ async function updateStat(field, delta) {
   let data = snapshot.val();
   
   data = degrade(data);
- 
+  data[field] = Math.min(100, Math.max(0, data[field] + delta));
+  data.lastUpdate = Date.now();
+  
+  // Добавляем монеты за уход
+  if (delta > 0 && data[field] > 70) {
+    const coinsEarned = Math.floor(delta / 10);
+    data.coins += coinsEarned;
+    showFloatingMessage(`+${coinsEarned} монет!`, '#4CAF50');
+  }
+  
+  await set(userRef, data);
+  render(data);
+}
+
+// Система смены имени
+function setupNameSystem() {
+  const editNameBtn = document.getElementById('edit-name-btn');
+  const nameModal = document.getElementById('name-modal');
+  const closeNameModal = document.getElementById('close-name-modal');
+  const saveNameBtn = document.getElementById('save-name-btn');
+  const cancelNameBtn = document.getElementById('cancel-name-btn');
+  const nameInput = document.getElementById('name-input');
+  const nameWarning = document.getElementById('name-change-warning');
+  const charCount = document.getElementById('char-count');
+
+  if (!editNameBtn) {
+    console.error('Edit name button not found!');
+    return;
+  }
+
+  editNameBtn.addEventListener('click', () => {
+    nameModal.style.display = 'flex';
+    nameInput.focus();
+  });
+
+  closeNameModal.addEventListener('click', () => {
+    nameModal.style.display = 'none';
+    nameInput.value = '';
+  });
+
+  cancelNameBtn.addEventListener('click', () => {
+    nameModal.style.display = 'none';
+    nameInput.value = '';
+  });
+
+  nameInput.addEventListener('input', (e) => {
+    const length = e.target.value.length;
+    charCount.textContent = length;
+    
+    if (length > 20) {
+      e.target.value = e.target.value.substring(0, 20);
+      charCount.textContent = 20;
+    }
+  });
+
+  saveNameBtn.addEventListener('click', async () => {
+    const newName = nameInput.value.trim();
+    
+    if (newName.length < 2) {
+      alert('Имя должно содержать минимум 2 символа!');
+      return;
+    }
+    
+    const userRef = ref(db, `users/${userId}`);
+    const snapshot = await get(userRef);
+    let data = snapshot.val();
+    
+    if (data.nameChanged) {
+      alert('Вы уже меняли имя кота! Это можно сделать только один раз.');
+      nameModal.style.display = 'none';
+      return;
+    }
+    
+    data.name = newName;
+    data.nameChanged = true;
+    
+    await set(userRef, data);
+    document.getElementById('pet-name-display').textContent = newName;
+    nameModal.style.display = 'none';
+    nameInput.value = '';
+    showFloatingMessage(`Имя изменено на: ${newName}`, '#4CAF50');
+  });
+}
+
+// Система магазина
+function renderShopItems(data) {
+  const accessoriesGrid = document.getElementById('accessories-grid');
+  const breedsGrid = document.getElementById('breeds-grid');
+  
+  if (!accessoriesGrid || !breedsGrid) {
+    console.error('Shop grids not found!');
+    return;
+  }
+  
+  // Очищаем сетки
+  accessoriesGrid.innerHTML = '';
+  breedsGrid.innerHTML = '';
+  
+  // Рендерим аксессуары
+  SHOP_ITEMS.accessories.forEach((item, index) => {
+    const owned = data.accessories.includes(item.id);
+    const equipped = data.currentAccessory === item.id;
+    const canBuy = index === 0 || data.accessories.includes(SHOP_ITEMS.accessories[index - 1].id);
+    
+    const shopItem = document.createElement('div');
+    shopItem.className = `shop-item ${owned ? 'owned' : ''} ${equipped ? 'equipped' : ''} ${!canBuy ? 'disabled' : ''}`;
+    
+    shopItem.innerHTML = `
+      <div class="item-preview">${item.emoji}</div>
+      <div class="item-info">
+        <div class="item-name">${item.name}</div>
+        <div class="item-price">${item.price} 🪙</div>
+        <div class="item-bonus">Бонус: +${Math.floor((item.bonus - 1) * 100)}% к доходам</div>
+      </div>
+      <button class="buy-btn ${owned ? 'owned' : ''} ${equipped ? 'equipped' : ''}" 
+              data-item="${item.id}" data-price="${item.price}" 
+              ${!canBuy ? 'disabled' : ''}>
+        ${equipped ? 'Надето' : owned ? 'Надеть' : 'Купить'}
+      </button>
+    `;
+    
+    accessoriesGrid.appendChild(shopItem);
+  });
+  
+  // Рендерим породы
+  SHOP_ITEMS.breeds.forEach(item => {
+    const owned = data.breed === item.id;
+    
+    const shopItem = document.createElement('div');
+    shopItem.className = `shop-item ${owned ? 'owned' : ''}`;
+    
+    shopItem.innerHTML = `
+      <div class="item-preview">${item.emoji}</div>
+      <div class="item-info">
+        <div class="item-name">${item.name}</div>
+        <div class="item-price">${item.price} 🪙</div>
+      </div>
+      <button class="buy-btn ${owned ? 'equipped' : ''}" 
+              data-item="${item.id}" data-price="${item.price}">
+        ${owned ? 'Выбрано' : 'Купить'}
+      </button>
+    `;
+    
+    breedsGrid.appendChild(shopItem);
+  });
+  
+  // Добавляем обработчики для кнопок покупки
+  document.querySelectorAll('.buy-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const item = button.dataset.item;
+      const price = parseInt(button.dataset.price);
+      buyItem(item, price);
+    });
+  });
+}
+
+async function buyItem(item, price) {
+  const userRef = ref(db, `users/${userId}`);
+  const snapshot = await get(userRef);
+  let data = snapshot.val();
+  
+  data = degrade(data);
+  
+  if (data.coins < price) {
+    alert('Недостаточно монет!');
+    return;
+  }
+  
+  const isAccessory = SHOP_ITEMS.accessories.some(acc => acc.id === item);
+  const isBreed = SHOP_ITEMS.breeds.some(breed => breed.id === item);
+  
+  if (isAccessory) {
+    // Проверяем, куплен ли предыдущий аксессуар
+    const itemIndex = SHOP_ITEMS.accessories.findIndex(acc => acc.id === item);
+    if (itemIndex > 0) {
+      const prevItem = SHOP_ITEMS.accessories[itemIndex - 1].id;
+      if (!data.accessories.includes(prevItem)) {
+        alert('Сначала нужно купить предыдущий аксессуар!');
+        return;
+      }
+    }
+    
+    if (!data.accessories.includes(item)) {
+      // Покупка нового аксессуара
+      data.accessories.push(item);
+      data.currentAccessory = item;
+      data.coins -= price;
+      showFloatingMessage(`Куплен ${getAccessoryName(item)}!`, '#4CAF50');
+    } else {
+      // Переключение аксессуара
+      if (data.currentAccessory === item) {
+        data.currentAccessory = null;
+        showFloatingMessage('Аксессуар снят', '#666');
+      } else {
+        data.currentAccessory = item;
+        showFloatingMessage('Аксессуар надет', '#4CAF50');
+      }
+    }
+  } else if (isBreed) {
+    if (data.breed !== item) {
+      data.breed = item;
+      data.coins -= price;
+      showFloatingMessage(`Порода изменена на ${getBreedName(item)}!`, '#FF9800');
+    }
+  }
+  
+  data.lastUpdate = Date.now();
+  await set(userRef, data);
+  render(data);
+}
+
+function getAccessoryName(id) {
+  const item = SHOP_ITEMS.accessories.find(acc => acc.id === id);
+  return item ? item.name : '';
+}
+
+function getBreedName(id) {
+  const item = SHOP_ITEMS.breeds.find(breed => breed.id === id);
+  return item ? item.name : '';
+}
+
+// Мини-игры
+async function playDiceGame() {
+  const userRef = ref(db, `users/${userId}`);
+  const snapshot = await get(userRef);
+  let data = snapshot.val();
+  
+  data = degrade(data);
+  
+  if (data.happiness < 20) {
+    alert('😿 Кот слишком грустный для игры! Поднимите настроение.');
+    return;
+  }
+  
+  const userGuess = parseInt(prompt('🎯 Угадай число от 1 до 6:'));
+  
+  if (isNaN(userGuess) || userGuess < 1 || userGuess > 6) {
+    alert('❌ Введите число от 1 до 6!');
+    return;
+  }
+  
+  const dice = Math.floor(Math.random() * 6) + 1;
+  
+  if (userGuess === dice) {
+    const bonusMultiplier = data.currentAccessory ? 
+      SHOP_ITEMS.accessories.find(acc => acc.id === data.currentAccessory)?.bonus || 1 : 1;
+    const coinsWon = Math.floor(15 * bonusMultiplier);
+    
+    data.coins += coinsWon;
+    data.happiness = Math.min(100, data.happiness + 10);
+    alert(`🎉 Вы выиграли! +${coinsWon} монет, +10 к настроению`);
+    showFloatingMessage(`+${coinsWon} монет! 🎉`, "#4CAF50");
+  } else {
+    data.happiness = Math.max(0, data.happiness - 5);
+    alert(`😔 Выпало: ${dice}. Попробуйте еще раз! -5 к настроению`);
+  }
+  
+  data.lastUpdate = Date.now();
+  await set(userRef, data);
+  render(data);
+}
+
+async function playClickGame() {
+  const userRef = ref(db, `users/${userId}`);
+  const snapshot = await get(userRef);
+  let data = snapshot.val();
+  
+  data = degrade(data);
+  
+  if (data.happiness < 15) {
+    alert('😿 Кот слишком грустный для игры!');
+    return;
+  }
+  
+  const petAvatar = document.getElementById('pet-avatar');
+  let clicks = 0;
+  const startTime = Date.now();
+  const timeLimit = 5000;
+  
+  alert('🎯 Быстро нажимайте на кота 5 раз за 5 секунд!');
+  
+  const originalCursor = petAvatar.style.cursor;
+  petAvatar.style.cursor = 'pointer';
+  
+  const clickHandler = () => {
+    clicks++;
+    
+    if (clicks >= 5) {
+      const timeUsed = Date.now() - startTime;
+      if (timeUsed <= timeLimit) {
+        const bonusMultiplier = data.currentAccessory ? 
+          SHOP_ITEMS.accessories.find(acc => acc.id === data.currentAccessory)?.bonus || 1 : 1;
+        const coinsWon = Math.floor(20 * bonusMultiplier);
+        
+        data.coins += coinsWon;
+        data.happiness = Math.min(100, data.happiness + 15);
+        alert(`🏆 Победа! +${coinsWon} монет, +15 к настроению! Время: ${(timeUsed/1000).toFixed(2)}с`);
+        showFloatingMessage(`+${coinsWon} монет! 🏆`, "#2196F3");
+      } else {
+        alert('⏰ Время вышло! Попробуйте еще раз.');
+      }
+      cleanup();
+    }
+  };
+  
+  const cleanup = () => {
+    petAvatar.removeEventListener('click', clickHandler);
+    petAvatar.style.cursor = originalCursor;
+    data.lastUpdate = Date.now();
+    
+    set(userRef, data).then(() => {
+      render(data);
+    });
+  };
+  
+  petAvatar.addEventListener('click', clickHandler);
+  
+  setTimeout(() => {
+    if (clicks < 5) {
+      alert('⏰ Время вышло! Попробуйте еще раз.');
+      cleanup();
+    }
+  }, timeLimit);
+}
+
+// Вспомогательные функции
+function showFloatingMessage(text, color = '#333') {
+  const message = document.createElement('div');
+  message.textContent = text;
+  message.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: ${color};
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    z-index: 1000;
+    font-weight: bold;
+    animation: floatUp 1.5s ease-out forwards;
+  `;
+  
+  // Добавляем стили для анимации
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translate(-50%, -20px); }
+      50% { opacity: 1; transform: translate(-50%, -50px); }
+      100% { opacity: 0; transform: translate(-50%, -80px); }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  document.body.appendChild(message);
+  
+  setTimeout(() => {
+    document.body.removeChild(message);
+  }, 1500);
+}
+
+// Настройка обработчиков событий
+function setupEventListeners() {
+  // Основные действия
+  document.getElementById('feed').addEventListener('click', () => {
+    updateStat('hunger', -25);
+    showFloatingMessage("Ням-ням! 🍖", "#4CAF50");
+  });
+  
+  document.getElementById('play').addEventListener('click', () => {
+    updateStat('happiness', +15);
+    showFloatingMessage("Весело! 🎾", "#2196F3");
+  });
+  
+  document.getElementById('wash').addEventListener('click', () => {
+    updateStat('cleanliness', +20);
+    showFloatingMessage("Чистота! ✨", "#00BCD4");
+  });
+  
+  // Игры
+  document.getElementById('dice-game').addEventListener('click', playDiceGame);
+  document.getElementById('click-game').addEventListener('click', playClickGame);
+  
+  // Магазин
+  document.getElementById('open-shop').addEventListener('click', () => {
+    document.getElementById('shop-modal').style.display = 'flex';
+  });
+  
+  document.getElementById('close-shop').addEventListener('click', () => {
+    document.getElementById('shop-modal').style.display = 'none';
+  });
+  
+  // Закрытие модальных окон при клике вне
+  document.getElementById('shop-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'shop-modal') {
+      document.getElementById('shop-modal').style.display = 'none';
+    }
+  });
+  
+  document.getElementById('name-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'name-modal') {
+      document.getElementById('name-modal').style.display = 'none';
+    }
+  });
+  
+  // Система имени
+  setupNameSystem();
+}
+
+// Основная функция инициализации
+async function initApp() {
+  try {
+    await loginWithTelegramId();
+    const userRef = ref(db, `users/${userId}`);
+    
+    const snapshot = await get(userRef);
+    if (!snapshot.exists()) {
+      await initUserData(userRef);
+    } else {
+      let data = snapshot.val();
+      data = degrade(data);
+      await set(userRef, data);
+    }
+    
+    // Слушатель реального времени
+    onValue(userRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        render(data);
+      }
+    });
+    
+    return true;
+    
+  } catch (error) {
+    console.error("Failed to initialize app:", error);
+    throw error;
+  }
+}
+
+// Запуск приложения
+initApp()
+  .then(() => {
+    setupEventListeners();
+    showFloatingMessage("Добро пожаловать! 🐱", "#4CAF50");
+  })
+  .catch(error => {
+    console.error("Failed to initialize app:", error);
+    alert("❌ Ошибка инициализации приложения.");
+  });
