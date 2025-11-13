@@ -9,14 +9,37 @@ if (!user) {
 }
 
 const userId = user.id.toString();
-const petRef = db.ref(`pets/${userId}`);
 
+// Функция для получения данных питомца
+function getPet() {
+  const data = localStorage.getItem(`pet_${userId}`);
+  if (!data) {
+    const newPet = {
+      hunger: 0,
+      happiness: 100,
+      cleanliness: 100,
+      lastUpdate: Date.now(),
+      name: "Котик"
+    };
+    localStorage.setItem(`pet_${userId}`, JSON.stringify(newPet));
+    return newPet;
+  }
+  return JSON.parse(data);
+}
+
+// Функция для сохранения данных питомца
+function savePet(pet) {
+  localStorage.setItem(`pet_${userId}`, JSON.stringify(pet));
+}
+
+// Обновляем интерфейс
 function render(pet) {
   document.getElementById('hunger').textContent = pet.hunger;
   document.getElementById('happiness').textContent = pet.happiness;
   document.getElementById('cleanliness').textContent = pet.cleanliness;
 }
 
+// Применяем деградацию
 function degrade(pet) {
   const now = Date.now();
   const minutesPassed = Math.floor((now - pet.lastUpdate) / (60 * 1000));
@@ -30,34 +53,22 @@ function degrade(pet) {
   return newPet;
 }
 
-petRef.once('value').then(snapshot => {
-  let pet = snapshot.val();
-  if (!pet) {
-    pet = {
-      hunger: 0,
-      happiness: 100,
-      cleanliness: 100,
-      lastUpdate: Date.now(),
-      name: "Котик"
-    };
-    petRef.set(pet);
-  }
+// Загружаем и отображаем
+let currentPet = getPet();
+currentPet = degrade(currentPet);
+render(currentPet);
+savePet(currentPet); // Сохраняем обновлённое состояние
 
-  const currentPet = degrade(pet);
-  render(currentPet);
-});
-
-function updateStat(field, delta) {
-  petRef.transaction(pet => {
-    if (!pet) return;
-    pet = degrade(pet);
-    pet[field] = Math.min(100, Math.max(0, pet[field] + delta));
-    pet.lastUpdate = Date.now();
-    render(pet);
-    return pet;
-  });
-}
-
+// Обработчики кнопок
 document.getElementById('feed').onclick = () => updateStat('hunger', -30);
 document.getElementById('play').onclick = () => updateStat('happiness', +20);
 document.getElementById('wash').onclick = () => updateStat('cleanliness', +25);
+
+function updateStat(field, delta) {
+  currentPet = getPet();
+  currentPet = degrade(currentPet);
+  currentPet[field] = Math.min(100, Math.max(0, currentPet[field] + delta));
+  currentPet.lastUpdate = Date.now();
+  render(currentPet);
+  savePet(currentPet);
+}
