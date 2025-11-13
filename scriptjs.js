@@ -754,5 +754,5 @@ initApp()
   })
   .catch(error => {
     console.error("❌ Failed to initialize app:", error);
-    alert("❌ Ошибка инициализации приложения. Провер
-
+    alert("❌ Ошибка инициализации приложения. Проверьте консоль для подробностей.");
+  });
