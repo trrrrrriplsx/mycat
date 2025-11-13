@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мой кот 🐱</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <h1>Мой кот</h1>
+  <div id="pet-avatar">🐱</div>
+
+  <div class="stats">
+    <div>Голод: <span id="hunger">0</span>/100</div>
+    <div>Настроение: <span id="happiness">0</span>/100</div>
+    <div>Чистота: <span id="cleanliness">0</span>/100</div>
+  </div>
+
+  <div class="actions">
+    <button id="feed">🍽 Кормить</button>
+    <button id="play">🧶 Играть</button>
+    <button id="wash">🛁 Мыть</button>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
