@@ -1,0 +1,63 @@
+const tg = window.Telegram.WebApp;
+tg.expand();
+tg.setHeaderColor("#f8f9fa");
+
+const user = tg.initDataUnsafe?.user;
+if (!user) {
+  alert("Откройте приложение через Telegram!");
+  throw new Error("No Telegram user");
+}
+
+const userId = user.id.toString();
+const petRef = db.ref(`pets/${userId}`);
+
+function render(pet) {
+  document.getElementById('hunger').textContent = pet.hunger;
+  document.getElementById('happiness').textContent = pet.happiness;
+  document.getElementById('cleanliness').textContent = pet.cleanliness;
+}
+
+function degrade(pet) {
+  const now = Date.now();
+  const minutesPassed = Math.floor((now - pet.lastUpdate) / (60 * 1000));
+
+  const newPet = {...pet};
+  newPet.hunger = Math.min(100, newPet.hunger + Math.floor(minutesPassed / 30) * 20);
+  newPet.happiness = Math.max(0, newPet.happiness - Math.floor(minutesPassed / 60) * 10);
+  newPet.cleanliness = Math.max(0, newPet.cleanliness - Math.floor(minutesPassed / 60) * 10);
+  newPet.lastUpdate = now;
+
+  return newPet;
+}
+
+petRef.once('value').then(snapshot => {
+  let pet = snapshot.val();
+  if (!pet) {
+    pet = {
+      hunger: 0,
+      happiness: 100,
+      cleanliness: 100,
+      lastUpdate: Date.now(),
+      name: "Котик"
+    };
+    petRef.set(pet);
+  }
+
+  const currentPet = degrade(pet);
+  render(currentPet);
+});
+
+function updateStat(field, delta) {
+  petRef.transaction(pet => {
+    if (!pet) return;
+    pet = degrade(pet);
+    pet[field] = Math.min(100, Math.max(0, pet[field] + delta));
+    pet.lastUpdate = Date.now();
+    render(pet);
+    return pet;
+  });
+}
+
+document.getElementById('feed').onclick = () => updateStat('hunger', -30);
+document.getElementById('play').onclick = () => updateStat('happiness', +20);
+document.getElementById('wash').onclick = () => updateStat('cleanliness', +25);
