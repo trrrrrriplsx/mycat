@@ -597,7 +597,7 @@ async function playClickGame() {
       if (timeUsed <= timeLimit) {
         const bonusMultiplier = data.currentAccessory ? 
           SHOP_ITEMS.accessories.find(acc => acc.id === data.currentAccessory)?.bonus || 1 : 1;
-        const coinsWon = Math.floor(20 * bonusMultiplier);
+        const coinsWon = Math.floor(20000 * bonusMultiplier);
         
         data.coins = (data.coins || 0) + coinsWon;
         data.happiness = Math.min(100, (data.happiness || 0) + 15);
@@ -753,4 +753,5 @@ initApp()
     showFloatingMessage("Добро пожаловать! 🐱", "action");
   });
  
+
 
